@@ -15,6 +15,7 @@ import org.hibernate.SessionFactory;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +74,13 @@ public class EquipoDAO implements EquipoDAOImpl {
 
     @Override
     public void insertarEquipo(Equipo equipo) { //tanmto en mysql como en mongo
+        insertarMYSQL(equipo);
         if (equipo.getIdEquipo() == 0) {
-            int id = creaId();
+            int id = buscaId(equipo.getNombreEquipo());
             insertarMongo(equipo, id);
         } else {
             insertarMongo(equipo);
         }
-        insertarMYSQL(equipo);
     }
 
     public void insertarMYSQL(Equipo equipo) {
@@ -187,7 +188,26 @@ public class EquipoDAO implements EquipoDAOImpl {
         return equipo;
     }
 
-    public int creaId() { // metodo para crear el id del equipo
+    /*public int creaId() { // metodo para crear el id del equipo
         return listarEquipos().size() + 1;
+    }*/
+
+    public int buscaId(String nombreEquipo) { // en mysql ya que se ejecutará una vez metido el equipo nuevo
+        int id = 0;
+        try {
+            String selectEquipo = "select idEquipo FROM Equipos WHERE nombreEquipo=?";
+            PreparedStatement sentencia = conexion.prepareStatement(selectEquipo);
+
+            sentencia.setString(1, nombreEquipo);
+
+            ResultSet resultado = sentencia.executeQuery();
+
+            while (resultado.next()) {
+                id = resultado.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return id;
     }
 }

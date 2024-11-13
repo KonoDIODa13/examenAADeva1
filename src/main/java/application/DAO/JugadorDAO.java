@@ -70,6 +70,7 @@ public class JugadorDAO implements JugadorDAOImpl {
     /*
     este metodo lo hice antes de que nos comentaras que lo de los cumpleaños no fuera con todos los jugadores,
     sino con los del equipo.
+    */
     public List<Jugador> listarJugadoresTodos() {
         List<Jugador> jugadores = new ArrayList<>();
         try {
@@ -85,6 +86,5 @@ public class JugadorDAO implements JugadorDAOImpl {
         }
         return jugadores;
     }
-    */
 }
 

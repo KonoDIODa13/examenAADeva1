@@ -12,7 +12,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import org.hibernate.mapping.Map;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,6 +32,8 @@ public class JugadoresController {
 
     public Jugador jugadorSeleccionado;
 
+
+    Equipo equipoSeleccionado;
 
     public JugadoresController() {
         dao = new JugadorDAO();
@@ -61,14 +62,16 @@ public class JugadoresController {
         List<Jugador> cumpleJugador = new ArrayList<>();
         List<Integer> edades = new ArrayList<>();
         LocalDate fechaHoy = LocalDate.now();
-        jugadores.forEach(jugador -> {
-            if (fechaHoy.getDayOfMonth() == jugador.getFechaNacimiento().getDayOfMonth() &&
-                    fechaHoy.getMonthValue() == jugador.getFechaNacimiento().getMonthValue()) {
-                int edad = fechaHoy.getYear() - jugador.getFechaNacimiento().getYear();
-                cumpleJugador.add(jugador);
-                edades.add(edad);
-            }
-        });
+        dao.listarJugadoresTodos().forEach(jugador -> {
+                    if (fechaHoy.getDayOfMonth() == jugador.getFechaNacimiento().getDayOfMonth() &&
+                            fechaHoy.getMonthValue() == jugador.getFechaNacimiento().getMonthValue()
+                    ) {
+                        int edad = fechaHoy.getYear() - jugador.getFechaNacimiento().getYear();
+                        cumpleJugador.add(jugador);
+                        edades.add(edad);
+                    }
+                }
+        );
         if (cumpleJugador.isEmpty()) {
             AlertUtils.mostrarConfirmacion("No hay ningun jugador de dicho equipo que cumpla hoy años.");
         } else {
@@ -78,8 +81,6 @@ public class JugadoresController {
             }
         }
     }
-
-    Equipo equipoSeleccionado;
 
     public void setEquipo(Equipo equipo) {
         equipoSeleccionado = equipo;
